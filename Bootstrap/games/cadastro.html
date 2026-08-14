@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="../games/css/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#"> <img src="./imagens/imagens/logo.png" class="bg-dark" alt="ETEC games"> </a>
+        </nav>
+    </header>
+    <section class="container-fluid mt-5">
+        <p class="fs-1 text-center">Cadastro de Games</p>
+        <form class="row g-3">
+            <div class="col-md-12">
+                <label for="inputEmail4" class="form-label">Nome do Game</label>
+                <input type="email" class="form-control" id="inputEmail4">
+            </div>
+            <div class="col-md-12">
+                <label for="inputState" class="form-label">Plataforma</label>
+                <select id="inputState" class="form-select">
+                    <option selected>Selecione uma opção:</option>
+                    <option>Playstation 4</option>
+                    <option>Playstation 5</option>
+                    <option>Xbox One</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="inputCity" class="form-label">Preço</label>
+                <input type="number" class="form-control" id="inputCity">
+            </div>
+            <div class="col-md-6">
+                <label for="inputState" class="form-label">Novidade</label>
+                <select id="inputState" class="form-select">
+                    <option selected>S</option>
+                    <option>N</option>
+                </select>
+            </div>
+            <div class="col-md-12">
+                <label for="inputZip" class="form-label">Selecionar a Imagem</label>
+                <input type="file" class="form-control" id="inputZip">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </div>
+        </form>
+    </section>
+    <script src="../games/js/bootstrap.min.js"></script>
+</body>
+</html>
