@@ -59,7 +59,37 @@
             </div>
         </div>
     </section>
-    
+    <div class="container mt-5">
+        <table class="table table-bordered text-center">
+        <thead>
+            <tr class="bg-light">
+            <th scope="col">Código do Game</th>
+            <th scope="col">Nome do Game</th>
+            <th scope="col">Plataforma</th>
+            <th scope="col">Preço</th>
+            <th scope="col">Imagem</th>
+            <th scope="col">Novidade</th>
+            
+            </tr>
+        </thead>
+        <tbody>
+        
+            <tr>
+            <td>><?php echo $row["codgame"]?></td>
+                    <tr>
+            <td><?php echo $row["codgame"]?></td>
+            <td><?php echo $row["nome"]?></td>
+            <td><?php echo $row["plataforma"]?></td>
+            <td><?php echo $row["preco"]?></td>
+            <td><img src="<?php echo $row["arquivo"]?>" class="img_lista img-fluid" width="80"></td>
+            <td><?php echo $row["novidade"]?></td>
+            </tr>
+            </tr>
+        
+
+        </tbody>
+        </table>
+    </div>
     <script src="../games/js/bootstrap.min.js"></script>
 </body>
 </html>
@@ -132,6 +162,32 @@
     }catch (PDOException $erro){ //caso não executar captura o erro no sgbd
         echo $erro->getMessage();
     }
-
 //fecha o if 
+?>
+<?php	
+    try{
+        
+        //cria a variavel consulta que ira armazenar resultado sql
+        $consulta = $conn->prepare("SELECT * FROM games;");
+        $consulta->execute();
+        
+        //codigo para consulta
+        while ($row = $consulta->fetch(PDO::FETCH_ASSOC)) {
+        ?>	
+        <tr>
+        <td><?php echo $row["codgame"]?></td>
+        <td><?php echo $row["nome"]?></td>
+        <td><?php echo $row["plataforma"]?></td>
+        <td><?php echo $row["preco"]?></td>
+        <td><img src="<?php echo $row["arquivo"]?>"></td>
+        <td><?php echo $row["novidade"]?></td>
+        </tr>
+    
+    <?php		
+        }
+        
+    }
+    catch (PDOException $erro) {
+        echo $erro->getMessage();
+    }
 ?>
