@@ -72,42 +72,15 @@
         <p class="fs-1 text-center mt-5">Novidades</p>
 
         <div class=" row text-center mt-5">
-        <div class="col-sm-3">
-            <img src="./imagens/novidade1.jpg" alt="fifa 2023" class="img_novidades">
-            <p><strong>FIFA 23- Playstation 4</strong></p>
-            <p>Plataforma: Playstation 4</p>
-            <p>R$263,91</p>
-            <a href="#" class="btn btn-primary">Comprar</a>
-        </div>
+            <?php
+                // Chamar o arquivo de conecxao
+                require_once "conecxao.php";
+                $consulta = $conn->prepare("SELECT * FROM games where novidade='S'");
+                $consulta->execute();
 
-
-        
-        <div class="col-sm-3">
-            <img src="./imagens/novidade2.jpg" alt="God of war ragnarok" class="img_novidades">
-            <p><strong> God of war ragnarok</strong></p>
-            <p>Plataforma: Playstation 4</p>
-            <p>R$270,50</p>
-            <a href="#" class="btn btn-primary">Comprar</a>
-        </div>
-
-
-        
-        <div class="col-sm-3">
-            <img src="./imagens/novidade3.jpg" alt="fifa 2023" class="img_novidades">
-            <p><strong> FIFA 23- Playstation 5</strong></p>
-            <p>Plataforma: Playstation 4</p>
-            <p>R$322,25</p>
-            <a href="#" class="btn btn-primary">Comprar</a>
-        </div>
-
-        
-        <div class="col-sm-3">
-            <img src="./imagens/novidade4.jpg" alt="Gears 5" class="img_novidades">
-            <p><strong> Gears 5 - Xbox One</strong></p>
-            <p>Plataforma: Xbox One</p>
-            <p>R$322,26</p>
-            <a href="#" class="btn btn-primary">Comprar</a>
-        </div>
+                while ($linha = $consulta->fetch(PDO::FETCH_ASSOC)){
+                    
+                }
         </div>
     </section>
 
