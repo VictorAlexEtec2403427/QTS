@@ -1,193 +1,439 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid justify-content-center">
-                <a class="navbar-brand" href="#"> 
-                    <img src="./imagens/logo.png" class="bg-dark" alt="ETEC games"> 
-                </a>
-            </div>
-        </nav>
-    </header>
-    
-    <section class="container mt-5">
-        <p class="fs-1 text-center">Cadastro de Games</p>
-        
-        <!-- Linha centralizada para conter o formulário com largura controlada -->
-        <div class="row justify-content-center">
-            <div class="col-md-12 col-lg-6">
-                <form class="row g-3" name="form1" method="post" action="cadastrar_games.php" enctype="multipart/form-data">
-                    <div class="col-md-12">
-                        <label for="inputEmail4" class="form-label">Nome do Game</label>
-                        <input type="text" class="form-control" id="inputEmail4" name="nome">
-                    </div>
-                    <div class="col-md-12">
-                        <label for="inputState" class="form-label">Plataforma</label>
-                        <select id="inputState" class="form-select" name="plataforma">
-                            <option selected>Selecione uma opção:</option>
-                            <option>Playstation 4</option>
-                            <option>Playstation 5</option>
-                            <option>Xbox One</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inputCity" class="form-label">Preço</label>
-                        <input type="number" class="form-control" id="inputCity" name="preco">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="inputStateNovidade" class="form-label">Novidade</label>
-                        <select id="inputStateNovidade" class="form-select" name="novidade">
-                            <option selected>S</option>
-                            <option>N</option>
-                        </select>
-                    </div>
-                    <div class="col-md-12">
-                        <label for="inputZip" class="form-label">Selecionar a Imagem</label>
-                        <input type="file" class="form-control" id="inputZip" name="arquivo">
-                    </div>
-                    <div class="col-3 text-center">
-                        <button type="submit" class="btn btn-primary px-5" name="cadastrar">Cadastrar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-    <div class="container mt-5">
-        <table class="table table-bordered text-center">
-        <thead>
-            <tr class="bg-light">
-            <th scope="col">Código do Game</th>
-            <th scope="col">Nome do Game</th>
-            <th scope="col">Plataforma</th>
-            <th scope="col">Preço</th>
-            <th scope="col">Imagem</th>
-            <th scope="col">Novidade</th>
-            
-            </tr>
-        </thead>
-        <tbody>
-        
-            <tr>
-            <td>><?php echo $row["codgame"]?></td>
-                    <tr>
-            <td><?php echo $row["codgame"]?></td>
-            <td><?php echo $row["nome"]?></td>
-            <td><?php echo $row["plataforma"]?></td>
-            <td><?php echo $row["preco"]?></td>
-            <td><img src="<?php echo $row["arquivo"]?>" class="img_lista img-fluid" width="80"></td>
-            <td><?php echo $row["novidade"]?></td>
-            </tr>
-            </tr>
-        
-
-        </tbody>
-        </table>
-    </div>
-    <script src="../games/js/bootstrap.min.js"></script>
-</body>
-</html>
 
 <?php
-    //chamar o arquivo de conexao
-    require_once "conexao.php";
-    try{
-        //verifica se o botão Cadastrar foi clicado
-        if(isset($_REQUEST["cadastrar"])){
+require_once "conexao.php";
 
-            //se botão não estiver vazio receba os dados do formulario
-            $nome = $_REQUEST["nome"];
-            $plataforma = $_REQUEST["plataforma"];
-            $preco = $_REQUEST["preco"];
-            $novidade = $_REQUEST["novidade"];
-            
-            
-            
-            // CÓDIGO UPLOAD imagem
-            //definindo timezone - data e hora
-            date_default_timezone_set('America/Sao_Paulo');
-            $data = date("d-m-Y");
-            $time = date("H-i-s");
+// ==========================================
+// CADASTRAR GAME
+// ==========================================
 
-            
-            //verifica o arquivo para upload
-            $nomeimg =  $_FILES["arquivo"]["name"];
-            $temp =     $_FILES["arquivo"]["tmp_name"]; /*caminho temporário do arquivo*/
-            
+if (isset($_POST["cadastrar"])) {
 
-            //verifica a extensao do arquivo
-            $ext = pathinfo($nomeimg, PATHINFO_EXTENSION);
+    try {
 
+        // Receber dados do formulário
+        $nome = trim($_POST["nome"]);
+        $plataforma = $_POST["plataforma"];
+        $preco = $_POST["preco"];
+        $novidade = $_POST["novidade"];
 
-            //renomear o nome da imagem
-            $novo_nomeimg = 'imagem' . '_' . $time .  '_'. $data . '.' . $ext;
-
-            //Comando para mover o arquivo para a pasta img- atenção - a pasta img deverá estar em games
-            $mover = move_uploaded_file($temp, 'img/' . $novo_nomeimg);
-
-
-            //CRIANDO CAMINHO DO ARQUIVO
-            $arquivo = 'img/' . $novo_nomeimg;
-            
-
-            //variavel com os dados de gravação na tabela
-            $sql = $conn->prepare("INSERT INTO games(codgame, nome, plataforma, preco, arquivo, novidade)
-                                                VALUES (:codgame, :nome, :plataforma, :preco, :arquivo, :novidade) ");
-                
-            //passagem de parametros para a tabela
-            $sql->bindValue(':codgame',null);
-            $sql->bindValue(':nome',$nome);
-            $sql->bindValue(':plataforma',$plataforma);
-            $sql->bindValue(':preco',$preco);
-            $sql->bindValue(':arquivo', $arquivo);
-            $sql->bindValue(':novidade', $novidade);
-            
-                
-                
-                
-            //execução da query de inserção
-            $sql->execute();
-            //msg caso não ocorra erro
-            echo "<script language=javascript>
-            alert('Dados gravados com Sucesso !!');
-            location.href = 'cadastrar_games.php';
-            </script>";	
+        // Verificar campos obrigatórios
+        if (empty($nome) || empty($plataforma) || $preco === "") {
+            throw new Exception("Preencha todos os campos obrigatórios!");
         }
-    }catch (PDOException $erro){ //caso não executar captura o erro no sgbd
-        echo $erro->getMessage();
-    }
-//fecha o if 
-?>
-<?php	
-    try{
-        
-        //cria a variavel consulta que ira armazenar resultado sql
-        $consulta = $conn->prepare("SELECT * FROM games;");
-        $consulta->execute();
-        
-        //codigo para consulta
-        while ($row = $consulta->fetch(PDO::FETCH_ASSOC)) {
-        ?>	
-        <tr>
-        <td><?php echo $row["codgame"]?></td>
-        <td><?php echo $row["nome"]?></td>
-        <td><?php echo $row["plataforma"]?></td>
-        <td><?php echo $row["preco"]?></td>
-        <td><img src="<?php echo $row["arquivo"]?>"></td>
-        <td><?php echo $row["novidade"]?></td>
-        </tr>
-    
-    <?php		
+
+        // Verificar se uma imagem foi enviada
+        if (
+            !isset($_FILES["arquivo"]) ||
+            $_FILES["arquivo"]["error"] !== UPLOAD_ERR_OK
+        ) {
+            throw new Exception("Selecione uma imagem válida!");
         }
-        
+
+        // Pasta onde as imagens serão armazenadas
+        $pasta = "img/";
+
+        // Criar pasta caso não exista
+        if (!is_dir($pasta)) {
+            mkdir($pasta, 0755, true);
+        }
+
+        // Verificar extensão da imagem
+        $ext = strtolower(
+            pathinfo($_FILES["arquivo"]["name"], PATHINFO_EXTENSION)
+        );
+
+        $extensoesPermitidas = ["jpg", "jpeg", "png", "gif", "webp"];
+
+        if (!in_array($ext, $extensoesPermitidas)) {
+            throw new Exception("Formato de imagem não permitido!");
+        }
+
+        // Verificar se o arquivo realmente é uma imagem
+        if (getimagesize($_FILES["arquivo"]["tmp_name"]) === false) {
+            throw new Exception("O arquivo enviado não é uma imagem!");
+        }
+
+        // Gerar nome único para a imagem
+        $novo_nomeimg = uniqid("game_", true) . "." . $ext;
+
+        // Caminho completo da imagem
+        $arquivo = $pasta . $novo_nomeimg;
+
+        // Mover imagem para a pasta img
+        if (!move_uploaded_file(
+            $_FILES["arquivo"]["tmp_name"],
+            $arquivo
+        )) {
+            throw new Exception("Erro ao enviar a imagem!");
+        }
+
+        // Inserir dados no banco de dados
+        // codgame é auto incremento
+        $sql = $conn->prepare("
+            INSERT INTO games
+            (nome, plataforma, preco, arquivo, novidade)
+            VALUES
+            (:nome, :plataforma, :preco, :arquivo, :novidade)
+        ");
+
+        $sql->bindValue(":nome", $nome);
+        $sql->bindValue(":plataforma", $plataforma);
+        $sql->bindValue(":preco", $preco);
+        $sql->bindValue(":arquivo", $arquivo);
+        $sql->bindValue(":novidade", $novidade);
+
+        $sql->execute();
+
+        echo "<script>
+            alert('Game cadastrado com sucesso!');
+            window.location.href = 'cadastrar_games.php';
+        </script>";
+
+        exit();
+
+    } catch (Exception $erro) {
+
+        echo "<script>
+            alert(" . json_encode($erro->getMessage()) . ");
+        </script>";
+
+    } catch (PDOException $erro) {
+
+        echo "Erro no banco de dados: " . htmlspecialchars($erro->getMessage());
+
     }
-    catch (PDOException $erro) {
-        echo $erro->getMessage();
-    }
+}
+
 ?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro de Games</title>
+
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+    <header>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+            <div class="container-fluid justify-content-center">
+
+                <a class="navbar-brand" href="#">
+
+                    <img
+                        src="./imagens/logo.png"
+                        class="bg-dark"
+                        alt="ETEC games"
+                    >
+
+                </a>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- FORMULÁRIO DE CADASTRO -->
+    <section class="container mt-5">
+
+        <p class="fs-1 text-center">
+            Cadastro de Games
+        </p>
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-12 col-lg-6">
+
+                <form
+                    class="row g-3"
+                    name="form1"
+                    method="post"
+                    action="cadastrar_games.php"
+                    enctype="multipart/form-data"
+                >
+
+                    <div class="col-md-12">
+
+                        <label for="nome" class="form-label">
+                            Nome do Game
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="nome"
+                            name="nome"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-12">
+
+                        <label for="plataforma" class="form-label">
+                            Plataforma
+                        </label>
+
+                        <select
+                            id="plataforma"
+                            class="form-select"
+                            name="plataforma"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione uma opção:
+                            </option>
+
+                            <option value="Playstation 4">
+                                Playstation 4
+                            </option>
+
+                            <option value="Playstation 5">
+                                Playstation 5
+                            </option>
+
+                            <option value="Xbox One">
+                                Xbox One
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label for="preco" class="form-label">
+                            Preço
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="preco"
+                            name="preco"
+                            step="0.01"
+                            min="0"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label for="novidade" class="form-label">
+                            Novidade
+                        </label>
+
+                        <select
+                            id="novidade"
+                            class="form-select"
+                            name="novidade"
+                            required
+                        >
+
+                            <option value="S">S</option>
+                            <option value="N">N</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-12">
+
+                        <label for="arquivo" class="form-label">
+                            Selecionar a Imagem
+                        </label>
+
+                        <input
+                            type="file"
+                            class="form-control"
+                            id="arquivo"
+                            name="arquivo"
+                            accept="image/*"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="col-12 text-center">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary px-5"
+                            name="cadastrar"
+                        >
+
+                            Cadastrar
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LISTAGEM DOS GAMES -->
+    <div class="container mt-5 mb-5">
+
+        <h2 class="text-center mb-4">
+            Games Cadastrados
+        </h2>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-striped text-center align-middle">
+
+                <thead>
+
+                    <tr class="table-dark">
+
+                        <th>Código do Game</th>
+
+                        <th>Nome do Game</th>
+
+                        <th>Plataforma</th>
+
+                        <th>Preço</th>
+
+                        <th>Imagem</th>
+
+                        <th>Novidade</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <?php
+
+                    try {
+
+                        // Consultar todos os games
+                        $consulta = $conn->prepare("
+                            SELECT * FROM games ORDER BY codgame DESC
+                        ");
+
+                        $consulta->execute();
+
+                        // Verificar se existem registros
+                        if ($consulta->rowCount() > 0) {
+
+                            // Percorrer os registros
+                            while ($row = $consulta->fetch(PDO::FETCH_ASSOC)) {
+
+                    ?>
+
+                                <tr>
+
+                                    <td>
+                                        <?php echo htmlspecialchars($row["codgame"]); ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo htmlspecialchars($row["nome"]); ?>
+                                    </td>
+
+                                    <td>
+                                        <?php echo htmlspecialchars($row["plataforma"]); ?>
+                                    </td>
+
+                                    <td>
+                                        R$ <?php echo number_format(
+                                            (float)$row["preco"],
+                                            2,
+                                            ",",
+                                            "."
+                                        ); ?>
+                                    </td>
+
+                                    <td>
+
+                                        <img
+                                            src="<?php echo htmlspecialchars($row["arquivo"]); ?>"
+                                            alt="Imagem do game"
+                                            class="img-fluid"
+                                            width="80"
+                                        >
+
+                                    </td>
+
+                                    <td>
+                                        <?php echo htmlspecialchars($row["novidade"]); ?>
+                                    </td>
+
+                                </tr>
+
+                    <?php
+
+                            }
+
+                        } else {
+
+                    ?>
+
+                            <tr>
+
+                                <td colspan="6">
+                                    Nenhum game cadastrado.
+                                </td>
+
+                            </tr>
+
+                    <?php
+
+                        }
+
+                    } catch (PDOException $erro) {
+
+                        echo "<tr>
+                            <td colspan='6'>
+                                Erro ao consultar os games.
+                            </td>
+                        </tr>";
+
+                    }
+
+                    ?>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOOTSTRAP -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
